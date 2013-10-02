@@ -1,0 +1,91 @@
+#########################################################
+# Intro to PowerShell - DEMO #1 - Verbs,Nouns
+#########################################################
+# In PowerShell you have Verbs and Nouns.
+# Verbs are actions. Lets look at PowerShell's verbs.
+Get-Verb | sort verb | Select Verb | ogv -Title "Verbs"
+# How many verbs are there?
+Get-Verb | measure
+# Nouns are the thing which you perform an action against.
+# Lets look at some of PowerShell's nouns.
+$nouns = foreach ($noun in (Get-Command -Noun * | sort noun -Unique)){($noun.Name).Split("-")| select -last 1};$nouns | ogv -Title "Unique Nouns"
+# How many unique nouns do I have?
+$nouns | measure
+# END DEMO #1
+cls
+#########################################################
+# Intro to PowerShell - DEMO #2 - Think,Type,Get
+#########################################################
+# The goal of the PowerShell language is to enable you to:
+# THINK IT.
+# TYPE IT.
+# GET IT.
+
+cls
+# Let's say we want to get some info about our running services. What would we type???
+
+Get-Service
+# Let's say we want to get an individual service.
+# Think what would we use to get info about a single named service???
+
+Get-Service -Name wuauserv
+# Let's say we want to start a service. What would we type???
+
+Start-Service -Name wuauserv -WhatIf
+# Let's say we want to stop a service. What would we type???
+
+Stop-Service -Name wuauserv -WhatIf
+# Let's say we want to set some setting for a service. What would we type???
+
+Set-Service -Name wuauserv -StartupType Automatic -WhatIf
+# END DEMO #2
+cls
+#########################################################
+# Intro to PowerShell - DEMO #3 - CSI - Command Line.
+#########################################################
+# What does it mean that PowerShell is an object based shell?
+# Let's start notepad.
+notepad.exe
+# Now lets learn about notepad from the text based command tasklist.
+tasklist /FI "Imagename eq notepad.exe“; tasklist /FI "Imagename eq notepad.exe“ | gm | select TypeName -Unique
+# The output of tasklist is just a string of text.
+# Now let's get the same thing from PowerShell.
+Get-Process notepad | ft ProcessName,Id,SessionId,WS -AutoSize; Get-Process notepad | gm | select TypeName -Unique
+# The output of Get-Process is the .Net type: System.Diagnostics.Process.
+# Let's see what we can do with the full fidelity notepad process object.
+# First we're going to store it in a variable.
+$Notepad = Get-Process Notepad
+# Now let's look at the available properties and methods. 
+$Notepad | gm -force
+# Let's dig deeper into the Threads property.
+$Notepad.Threads; $Notepad.Threads | gm -force | measure
+# An individual property, like threads, has many sub members!
+# Let's explore the threadstate property of the threads property.
+$Notepad.Threads.threadstate
+# Let's explore the value__ property of the threadstate property.
+$Notepad.Threads.threadstate.value__
+$Notepad.Threads.threadstate.value__ | gm -force
+# Now let's see just how many properties and methods we can 
+# potential explore, with something as simple as a single
+# notepad.exe process.
+$totalmembers = 0 ;foreach ($member in (gps notepad | gm -force)) {$totalmembers += ($member | gm -force | measure).count }; $totalmembers 
+# Amazing the amount of detail and info you can retrieve.
+# Now I will end this demo in a very CSI way...
+# with a murder.
+$Notepad.Kill()
+# END DEMO #3
+cls
+#########################################################
+# Intro to PowerShell - DEMO #4 - So many commands!
+##########################################################
+# PowerShell 3 and Server 2012 offers huge CMDlet coverage.
+# Here are all the commands I have available.
+Get-Command -All
+# Let's count em.
+Get-Command -All | measure
+# There are many new modules available.
+Get-Module -ListAvailable | measure
+# Coverage has increased so much, it will make your automation 
+# effots so much easier. There is no excuse to not use PowerShell.
+# END OF ALL DEMOs
+cls
